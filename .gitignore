@@ -1,7 +1,5 @@
 __pycache__
 gpt-j/secret
-gpt-j/model
-gpt-j/outputs
 *.jpg
 install_gpu_driver.py
 *.json
