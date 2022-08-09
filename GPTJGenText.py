@@ -78,11 +78,11 @@ def saveAndPassToImageGen(goodOutputs, currentDir):
     return generatedTextList
     
 
-def generateText(prompt, currentDir, project_id, bucket_name):
+def generateText(prompt, currentDir, model, HFtokenizer):
     modelPath = os.path.join(currentDir, 'gpt-j', 'model')
     sessionStamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
-    model, HFtokenizer = loadGPTJModelPlusTokenizer(modelPath)
+    # model, HFtokenizer = loadGPTJModelPlusTokenizer(modelPath)
 
     numSentsOut = 0
     while numSentsOut < 1:
@@ -96,6 +96,11 @@ def generateText(prompt, currentDir, project_id, bucket_name):
 
     return generatedPromptsList
 
+def setupModel():
+    currentDir = os.getcwd()
+    modelPath = os.path.join(currentDir, 'gpt-j', 'model')
+    model, HFtokenizer = loadGPTJModelPlusTokenizer(modelPath)
+    return model, HFtokenizer
 
 
 if __name__ == '__main__':
@@ -130,6 +135,7 @@ if __name__ == '__main__':
             break
     
     generatedPromptsList = saveAndPassToImageGen(goodOutputs)
+
 
 
 
