@@ -22,10 +22,16 @@ def generateBook(prompt, model, HFtokenizer):
     keyFile = os.path.join(secretPath,'my_keys.json')
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= keyFile
 
-    generatedPromptsList = generateText(prompt, currentDir, model, HFtokenizer)
-    print(generatedPromptsList)
-#    for count, prompt in enumerate(generatedPromptsList):
-#            generateImages(prompt, count, currentDir, project_id, bucket_name)
+    generatedPromptsList, generatedNounPromptsList = generateText(prompt, currentDir, model, HFtokenizer)
+
+    print(generatedPromptsList,generatedNounPromptsList)
+    
+    del generatedPromptsList[3:]
+    del generatedNounPromptsList[3:]
+
+    for count, prompt in enumerate(generatedNounPromptsList):
+            text = generatedPromptsList[count]
+            generateImages(prompt, text, count, currentDir, project_id, bucket_name)
 
     print("finish processing: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 

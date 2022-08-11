@@ -26,7 +26,7 @@ device = th.device('cpu' if not has_cuda else 'cuda')
 
 
 
-def generateImages(prompt, myNumber, currentDir,  project_id, bucket_name):
+def generateImages(prompt, text, myNumber, currentDir,  project_id, bucket_name):
 
 
     def model_fn(x_t, ts, **kwargs):
@@ -59,11 +59,11 @@ def generateImages(prompt, myNumber, currentDir,  project_id, bucket_name):
             checkpoint[key.replace('module.','')] = d[key]
         return checkpoint
 
-    def upLoadToBucket(name, prompt):
+    def upLoadToBucket(name, prompt, text):
         client = storage.Client(project_id)
         bucket = client.bucket(bucket_name)
         blob = bucket.blob(name)
-        blob.metadata =  {'prompt' : prompt}
+        blob.metadata =  {'prompt' : prompt, 'text' : text}
         blob.upload_from_filename(name)
 
         print(
@@ -207,7 +207,7 @@ def generateImages(prompt, myNumber, currentDir,  project_id, bucket_name):
         newimg = img.resize(newsize)
         newimg.save(name)
         print ('resized image')
-        upLoadToBucket(name, prompt)
+        upLoadToBucket(name, prompt, text)
         print ('uploaded image to bucket', name)
 
 
