@@ -10,7 +10,7 @@ GPT-J-6B
 
 ### Image generator
 
-Implementation of Imagen by @cene555
+Implementation of [Imagen](https://imagen.research.google/) by @cene555
 
 
 ## Hardware 
@@ -23,18 +23,14 @@ Pytorch GPU image
 | NVIDIA A100| a2-highgpu-1g |	1 GPU	|40 GB HBM2|	12 vCPUs|	85 GB |
 
 
-
-
-
 ## Installation requirements
-- Install GPU driver
-- Check driver installation
+- Install GPU driver and test
 ```
 nvidia-smi
 gcc --version
 nvcc --version
 ```
-- Create new conda environment, install Pytorch & CUDA dependencies, and test installation
+- Create new conda environment, install Pytorch & CUDA dependencies, and [test installation](https://stackoverflow.com/a/70946283)
 ```
 conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch -c nvidia
 python test_gpu_torch_install.py 
@@ -53,7 +49,7 @@ tar -xf git-lfs-linux-amd64-v3.2.0.tar.gz
 cd git-lfs-3.2.0/
 sudo ./install.sh
 ```
-- Install modules for image generator
+- Install modules for image generator ([original notebook](https://github.com/cene555/Imagen-pytorch/blob/main/notebooks/Imagen_pytorch_inference_new.ipynb))
 ```
 git lfs install
 git clone https://huggingface.co/Cene655/ImagenT5-3B
@@ -73,6 +69,13 @@ wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_
 pip install Flask
 pip install flask-restful
 ```
-
+## Troubleshooting
+Installing the GPU NVIDIA driver on the VM instance was problematic. The VM seemed to lose the driver's configuration once it was restarted. To address this problem, we ran GCP's script to manually reinstall the driver and modified it by commenting out the following statement `if check_driver_installed() and not args.force:` ...
+```
+sudo lsmod | grep -i nvidia
+curl https://raw.githubusercontent.com/GoogleCloudPlatform/compute-gpu-installation/main/linux/install_gpu_driver.py --output install_gpu_driver.py
+# modify script
+sudo python3 install_gpu_driver.py
+```
 
 
