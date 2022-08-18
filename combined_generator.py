@@ -3,6 +3,7 @@
 import os, json, datetime
 from GPTJGenText import generateText
 from imagenMod import generateImages
+from google.cloud import storage
 
 # prompt = "The red fox jumped the fence"
 
@@ -23,15 +24,27 @@ def generateBook(prompt, model, HFtokenizer):
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= keyFile
 
     generatedPromptsList, generatedNounPromptsList = generateText(prompt, currentDir, model, HFtokenizer)
+#    generatedPromptsList.insert(0, prompt)
+#    generatedNounPromptsList.insert(0, prompt)
 
     print(generatedPromptsList,generatedNounPromptsList)
     
-    del generatedPromptsList[3:]
-    del generatedNounPromptsList[3:]
+#    del generatedPromptsList[4:]
+#    del generatedNounPromptsList[4:]
+#    bucket_name = 'et-test-bucket-2'
+
+    def deleteBlobs(bucket_name):
+        storage_client = storage.Client()
+        blobs = storage_client.list_blobs(bucket_name)
+
+        for blob in blobs:
+           # print(blob.name)
+            blob.delete()
+
+    deleteBlobs(bucket_name)
 
     for count, prompt in enumerate(generatedNounPromptsList):
-            text = generatedPromptsList[count]
-            generateImages(prompt, text, count, currentDir, project_id, bucket_name)
+        text = generatedPromptsList[count]
+        generateImages(prompt, text, count, currentDir, project_id, bucket_name)
 
     print("finish processing: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-

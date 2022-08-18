@@ -70,7 +70,7 @@ def uploadBlob(project_id, bucket_name, source_file_name, destination_blob_name)
 # Function to extract the nouns 
 def colorNounExtractor(sent):
         colorNounPrompts = []
-        color_list = ['pink', 'blue', 'yellow', 'rainbow', 'red', 'green', 'purple','magenta', 'cyan', 'brown']
+        color_list = ['pink', 'blue', 'yellow', 'rainbow', 'red', 'green', 'purple','magenta', 'cyan', 'brown', 'cartoon']
         color = random.choice(color_list)
        # sent = str(sent)
         print(sent)

@@ -198,7 +198,7 @@ def generateImages(prompt, text, myNumber, currentDir,  project_id, bucket_name)
         _, _, new_img = face_enhancer.enhance(new_img, has_aligned=False,
                                              only_center_face=False, paste_back=True)
         print ('x')
-        name = 'IMAGE_n' + str(myNumber) + '.jpg'
+        name = 'IMAGE_n' + f'{myNumber:02d}' + '.jpg'
         cv2.imwrite(name, new_img)
         print ('wrote image')
         img = Image.open(name)
