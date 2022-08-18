@@ -24,21 +24,17 @@ def generateBook(prompt, model, HFtokenizer):
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= keyFile
 
     generatedPromptsList, generatedNounPromptsList = generateText(prompt, currentDir, model, HFtokenizer)
-#    generatedPromptsList.insert(0, prompt)
-#    generatedNounPromptsList.insert(0, prompt)
+
 
     print(generatedPromptsList,generatedNounPromptsList)
-    
-#    del generatedPromptsList[4:]
-#    del generatedNounPromptsList[4:]
-#    bucket_name = 'et-test-bucket-2'
+
+
 
     def deleteBlobs(bucket_name):
         storage_client = storage.Client()
         blobs = storage_client.list_blobs(bucket_name)
 
-        for blob in blobs:
-           # print(blob.name)
+        for blob in blobs
             blob.delete()
 
     deleteBlobs(bucket_name)
