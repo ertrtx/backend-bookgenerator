@@ -12,6 +12,13 @@ import argparse
 import random
 import json
 
+import nltk 
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('averaged_perceptron_tagger')
+from nltk.corpus import stopwords 
+from nltk.tokenize import word_tokenize, sent_tokenize
+
 
 def loadGPTJModelPlusTokenizer(modelPath):
     if th.cuda.is_available():
@@ -60,10 +67,34 @@ def uploadBlob(project_id, bucket_name, source_file_name, destination_blob_name)
         f"File {source_file_name} uploaded to {destination_blob_name}."
     )
 
+# Function to extract the nouns 
+def colorNounExtractor(sent):
+        colorNounPrompts = []
+        color_list = ['pink', 'blue', 'yellow', 'rainbow', 'red', 'green', 'purple','magenta', 'cyan', 'brown', 'cartoon']
+        color = random.choice(color_list)
+       # sent = str(sent)
+        print(sent)
+        words = nltk.word_tokenize(sent)
+        # words = [word for word in words if word not in set(stopwords.words('english'))]
+        # print(words)
+        tagged = nltk.pos_tag(words)
+        l = []
+        for (word, tag) in tagged:
+            # print(word, tag)
+            if tag in {'NN','NNP'}: # If the word is a noun
+                textGenPrompt = color + ' ' + word
+                l.append(textGenPrompt)
+        if len(l) == 0:
+          l.append(color + ' ' + random.choice(words))
+        textGenPromptOut = random.choice(l)
+        return textGenPromptOut
+
+
 def saveAndPassToImageGen(goodOutputs, currentDir):
     pick = random.randrange(len(goodOutputs))
     ii = 0
     generatedTextList = []
+    generatedNounPromptList = []
     for i in goodOutputs[pick]:
         if ii > 9:
             break
@@ -75,14 +106,15 @@ def saveAndPassToImageGen(goodOutputs, currentDir):
         generatedTextList.append(str(i))
         # uploadBlob(project_id, bucket_name, filenameLocal, filenameBucket)
         ii+=1
-    return generatedTextList
+        generatedNounPromptList.append(colorNounExtractor(str(i)))
+    return generatedTextList, generatedNounPromptList
     
 
-def generateText(prompt, currentDir, project_id, bucket_name):
+def generateText(prompt, currentDir, model, HFtokenizer):
     modelPath = os.path.join(currentDir, 'gpt-j', 'model')
     sessionStamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
-    model, HFtokenizer = loadGPTJModelPlusTokenizer(modelPath)
+    # model, HFtokenizer = loadGPTJModelPlusTokenizer(modelPath)
 
     numSentsOut = 0
     while numSentsOut < 1:
@@ -92,10 +124,15 @@ def generateText(prompt, currentDir, project_id, bucket_name):
         if numSentsOut >= 1:
             break
     
-    generatedPromptsList = saveAndPassToImageGen(goodOutputs, currentDir)
+    generatedPromptsList, generatedNounPromptsList = saveAndPassToImageGen(goodOutputs, currentDir)
 
-    return generatedPromptsList
+    return generatedPromptsList, generatedNounPromptsList
 
+def setupModel():
+    currentDir = os.getcwd()
+    modelPath = os.path.join(currentDir, 'gpt-j', 'model')
+    model, HFtokenizer = loadGPTJModelPlusTokenizer(modelPath)
+    return model, HFtokenizer
 
 
 if __name__ == '__main__':
@@ -130,6 +167,7 @@ if __name__ == '__main__':
             break
     
     generatedPromptsList = saveAndPassToImageGen(goodOutputs)
+
 
 
 

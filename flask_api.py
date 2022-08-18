@@ -7,6 +7,7 @@ import threading
 import sys
 import os
 import datetime
+import GPTJGenText
 
 currentDir = os.getcwd()
 sys.path.insert(0, currentDir)
@@ -19,7 +20,9 @@ api = Api(app)
 ## Main
 class book(Resource):
     def get(self, prompt):
-        threading.Thread(target=combined_generator.generateBook(prompt)).start()
+        print(type(model))
+        print(type(HFtokenizer))
+        threading.Thread(target=combined_generator.generateBook(prompt, model, HFtokenizer)).start()
         timeReady = "Book finished created at: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return {"data": prompt, "timeReady": timeReady}
 
@@ -34,4 +37,8 @@ api.add_resource(hello, "/hello")
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    global model
+    global HFtokenizer
+    model, HFtokenizer = GPTJGenText.setupModel()
+    app.run(host='0.0.0.0', port=5000, debug=False)
+
