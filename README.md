@@ -5,12 +5,11 @@ This is the repo for the back-end component of the Baby Book generator app.
 The back-end is architected as a REST API (Flask-based app) that can receive requests. The request includes a user prompt which serves as an input to a text generator function.  The text generator outputs a short story parsed into sentences and corresponding noun prompts derived from each sentence. Noun prompts are passed to an image generator function to create images. The originating prompt and sentence are attached to each image as metadata. Images are uploaded as blob objects to a GCS bucket.
 
 ### Text generator
-GPT-J-6B
+[GPT-J-6B](https://github.com/kingoflolz/mesh-transformer-jax/). Based on the example implementation with HuggingFace's Transformer library by [@mallorbc](https://github.com/mallorbc/gpt-j-6b).
 
 
 ### Image generator
-
-Implementation of [Imagen](https://imagen.research.google/) by @cene555
+Implementation of [Imagen](https://imagen.research.google/) by [@cene555](https://github.com/cene555/Imagen-pytorch).
 
 
 ## Hardware 
@@ -69,6 +68,12 @@ wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_
 pip install Flask
 pip install flask-restful
 ```
+## Running the app
+```
+conda activate <new env>
+python flask_api.py
+```
+
 ## Troubleshooting
 Installing the GPU NVIDIA driver on the VM instance was problematic. The VM seemed to lose the driver's configuration once it was restarted. To address this problem, we ran GCP's script to manually reinstall the driver and modified it by commenting out the following statement `if check_driver_installed() and not args.force:` ...
 ```
