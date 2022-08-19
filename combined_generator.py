@@ -34,7 +34,7 @@ def generateBook(prompt, model, HFtokenizer):
         storage_client = storage.Client()
         blobs = storage_client.list_blobs(bucket_name)
 
-        for blob in blobs
+        for blob in blobs:
             blob.delete()
 
     deleteBlobs(bucket_name)
